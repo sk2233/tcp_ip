@@ -15,7 +15,7 @@ func main() {
 	data := make([]byte, MaxPackageSize)
 	Init()
 	for {
-		n, err := inst.Read(data)
+		n, err := inst.Read(data) // 阻塞读取数据
 		HandleErr(err)
 		reader := NewByteReader(data[:n])
 		// 层层处理  使用的是本地网络，没有链路层，使用本地环路  点对点默认会丢弃链路层的数据 直接就是 ip 层了

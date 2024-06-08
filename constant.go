@@ -11,8 +11,8 @@ const (
 
 const (
 	// 以太网负载在  46~1500之间
-	MaxPackageSize = 6 + 6 + 2 + 1500
-	MinPackageSize = 6 + 6 + 2 + 46
+	MaxPackageSize = 1500
+	MinPackageSize = 46
 )
 
 type EtherType uint16
