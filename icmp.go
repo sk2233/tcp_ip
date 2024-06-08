@@ -17,9 +17,9 @@ func HandleICMP(param *Param, reader *ByteReader) {
 	CheckICMP(hdr, reader)
 	switch hdr.Type {
 	case ICMPReq:
-		HandlePing(param, reader)
+		HandlePing(param, reader) // 处理 ping请求
 	case ICMPResp:
-		// 没有主动ping的场景暂时不处理
+		// 没有主动ping的场景暂时不处理ping 的响应
 	case ICMPUnReach:
 		// 没有主动请求，也不会响应不可达，暂时不处理
 	default:
@@ -28,10 +28,10 @@ func HandleICMP(param *Param, reader *ByteReader) {
 }
 
 type Ping struct {
-	ID        uint16
-	Seq       uint16
+	ID        uint16 // 对面用于标识的随机id
+	Seq       uint16 // 第几次 ping
 	Timestamp []byte // 8  回显时间戳用于计算耗时
-	Data      []byte
+	Data      []byte // 一些随机数据
 }
 
 func HandlePing(param *Param, reader *ByteReader) {
@@ -49,11 +49,11 @@ func SendPing(param *Param, writer *ByteWriter, ping *Ping) {
 }
 
 func SendICMP(param *Param, writer *ByteWriter, hdr *ICMPHdr) {
-	WriteICMPHdr(writer, hdr)
+	WriteICMPHdr(writer, hdr) // 计算校验和需要先写入头部用头部与其数据一同计算
 	hdr.Checksum = GetChecksum(writer.GetData())
-	writer.Seek(4)
+	writer.Seek(4) // 计算完，移出之前没有校验和的头部写入有校验和的头部
 	WriteICMPHdr(writer, hdr)
-	hdr0 := &IPv4Hdr{
+	hdr0 := &IPv4Hdr{ // checksum交给下层计算
 		Version:  4,
 		HdrLen:   5,
 		Len:      writer.Len() + 20,
