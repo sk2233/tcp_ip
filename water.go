@@ -12,11 +12,10 @@ import (
 )
 
 func NewTun(reqIP, respIP string) *water.Interface {
-	inst, err := water.New(water.Config{
+	inst, err := water.New(water.Config{ // 构建一个网卡实例
 		DeviceType: water.TUN,
 	})
 	HandleErr(err)
-	inst.Name()
 	cmd := exec.Command("ifconfig", inst.Name(), reqIP, respIP, "up")
 	err = cmd.Run()
 	HandleErr(err)
