@@ -6,7 +6,7 @@ package main
 
 import "fmt"
 
-type IPv4Hdr struct { // 20byte
+type IPv4Hdr struct { // 不包含选项20byte
 	Version  uint8  // 4
 	HdrLen   uint8  // 4 头的整体大小，因为 ip包头是不定长的 要 *4 才是头长度
 	Unused   uint8  // 表示服务质量，没有用

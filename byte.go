@@ -18,7 +18,7 @@ func (r *ByteReader) ReadByte(count int) []byte {
 
 func (r *ByteReader) ReadU16() uint16 {
 	bs := r.ReadByte(2)
-	return binary.BigEndian.Uint16(bs)
+	return binary.BigEndian.Uint16(bs) // 注意网络是大段排序
 }
 
 func (r *ByteReader) ReadU32() uint32 {
