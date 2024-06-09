@@ -14,14 +14,14 @@ import (
 type TCPHdr struct { // 20byte
 	SrcPort   uint16
 	DstPort   uint16
-	SeqNum    uint32 // 发生使用
+	SeqNum    uint32 // 发送使用
 	AckNum    uint32 // 响应使用
-	HdrLen    uint8  // 4 头长度因为可变长协议 * 4
-	Unused    uint8  // 4
+	HdrLen    uint8  // 4bit 头长度因为可变长协议 * 4
+	Unused    uint8  // 4bit
 	Flags     uint8
 	WinSize   uint16
 	Checksum  uint16
-	UrgentPtr uint16
+	UrgentPtr uint16 // 指定紧急数据的 SeqNum 让对方优先传递，不常用
 	// 选项数据不管
 }
 
@@ -30,10 +30,10 @@ type TCPHandler func(block *TCPBlock, param *Param, reader *ByteReader)
 type TCPBlock struct {
 	State   TCPState
 	Handler TCPHandler
-	SrcPort uint16
+	SrcPort uint16 // 创建链接时赋值后面通信用于校验
 	AckNum  uint32
 	SeqNum  uint32
-	WinSize uint16
+	WinSize uint16 // 对方的窗口大小
 	Data    []byte // 要传输的数据，暂存
 	Index   int    // 传输的进度
 }

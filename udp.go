@@ -29,14 +29,14 @@ func HandleUDP(param *Param, reader *ByteReader) {
 	CheckUDP(hdr, reader)
 	if handler, ok := udpHandlers[hdr.DstPort]; ok {
 		handler(param, reader)
-	} else {
+	} else { // 应该返回端口不可达
 		panic(fmt.Sprintf("invalid UDP port %d", hdr.DstPort))
 	}
 }
 
 func SendUDP(param *Param, writer *ByteWriter, hdr *UDPHdr) {
 	WriteUDPHdr(writer, hdr)
-	fakeHdr := &FakeHdr{
+	fakeHdr := &FakeHdr{ // 伪头部信息
 		SrcAddr:  param.DstAddr,
 		DstAddr:  param.SrcAddr,
 		Protocol: Ipv4UDP,
@@ -44,8 +44,8 @@ func SendUDP(param *Param, writer *ByteWriter, hdr *UDPHdr) {
 	}
 	WriteFakeHdr(writer, fakeHdr)
 	hdr.Checksum = GetChecksum(writer.GetData())
-	writer.Seek(8 + 12)
-	WriteUDPHdr(writer, hdr)
+	writer.Seek(8 + 12)      // 移出伪头部与 udp 头部
+	WriteUDPHdr(writer, hdr) // 写入正确的 udp头
 	hdr0 := &IPv4Hdr{
 		Version:  4,
 		HdrLen:   5,
